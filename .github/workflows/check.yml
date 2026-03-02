@@ -1,9 +1,8 @@
 name: Weekend Trade Bot
 on:
   schedule:
-    # 毎週金曜日の日本時間 14:50 (UTCだと 5:50)
     - cron: '50 5 * * 5'
-  workflow_dispatch: # 手動実行ボタンも作る
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,5 +18,6 @@ jobs:
           pip install yfinance requests
       - name: Run script
         env:
-          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          USER_ID: ${{ secrets.USER_ID }}
         run: python main.py
