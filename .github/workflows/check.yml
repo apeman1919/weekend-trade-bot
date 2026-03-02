@@ -1,6 +1,9 @@
 name: Weekend Trade Bot
 on:
   schedule:
+    # 1回目：日本時間 12:00 (UTC 03:00)
+    - cron: '0 3 * * 5'
+    # 2回目：日本時間 14:50 (UTC 05:50)
     - cron: '50 5 * * 5'
   workflow_dispatch:
 
