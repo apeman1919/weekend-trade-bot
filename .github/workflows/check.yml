@@ -1,0 +1,23 @@
+name: Weekend Trade Bot
+on:
+  schedule:
+    # 毎週金曜日の日本時間 14:50 (UTCだと 5:50)
+    - cron: '50 5 * * 5'
+  workflow_dispatch: # 手動実行ボタンも作る
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          pip install yfinance requests
+      - name: Run script
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+        run: python main.py
