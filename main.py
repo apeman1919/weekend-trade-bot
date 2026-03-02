@@ -4,8 +4,7 @@ import requests
 import json
 from datetime import datetime
 
-# GitHubのSecretsから読み込みます
-# ※設定方法は下で説明します
+# GitHubのSecretsから読み込む設定
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 USER_ID = os.getenv("USER_ID")
 
@@ -19,8 +18,9 @@ def send_line_push(message):
         "to": USER_ID,
         "messages": [{"type": "text", "text": message}]
     }
-    # 2026年版の最新APIへ送信
-    requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+    # 2026年現在の標準API（Messaging API）へ送信
+    r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+    print(f"LINE API Response: {r.status_code}")
 
 def check_trade():
     try:
@@ -32,7 +32,7 @@ def check_trade():
         current_price = stock['Close'].iloc[-1]
         ma25 = stock['Close'].rolling(window=25).mean().iloc[-1]
         
-        # 今日が「第1金曜日」かどうか（3/6はNG判定になります）
+        # 今日が第1金曜日か判定
         is_first_friday = (datetime.now().day <= 7 and datetime.now().weekday() == 4)
         
         status = "🟢 【購入推奨】" if (not is_first_friday and vix < 20 and current_price > ma25) else "🔴 【見送り推奨】"
@@ -45,7 +45,7 @@ def check_trade():
         
         send_line_push(msg)
     except Exception as e:
-        send_line_push(f"エラー発生: {str(e)}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
     check_trade()
